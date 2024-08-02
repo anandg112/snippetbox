@@ -1,10 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 )
 
+// Define a home handler function which writes a byte slice containing
+// "Hello from Snippetbox" as the response body.
 func home(w http.ResponseWriter, r *http.Request) {
 
 	if r.URL.Path != "/" {
@@ -17,7 +21,16 @@ func home(w http.ResponseWriter, r *http.Request) {
 // Add a snippetView handler function.
 func snippetView(w http.ResponseWriter, r *http.Request) {
 
-	w.Write([]byte("Display a specific snippet..."))
+	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+
+	if err != nil || id < 1 {
+		http.NotFound(w, r)
+		return
+	}
+
+	//use Fprintf to interpolate the id value with the response.
+	// and write the string to the http.ResponseWriter.
+	fmt.Fprintf(w, "Display a specific snippet %d...", id)
 }
 
 // Add a snippetCreate handler function.
@@ -25,6 +38,7 @@ func snippetCreate(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != http.MethodPost {
 		w.Header().Set("Allow", http.MethodPost)
+		// w.Header()["Date"] = nil
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		return
 	}
