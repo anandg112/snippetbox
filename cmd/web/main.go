@@ -2,8 +2,9 @@ package main
 
 import (
 	"flag"
-	"log"
+	"log/slog"
 	"net/http"
+	"os"
 )
 
 func main() {
@@ -14,20 +15,19 @@ func main() {
 	flag.StringVar(&cfg.staticDir, "static-dir", "./ui/static", "Path to static assets")
 
 	flag.Parse()
-	// Register the two new handler functions and corresponding URL patterns with
-	// the servemux, in exactly the same way that we did before.
-	mux := http.NewServeMux()
 
-	fileServer := http.FileServer(http.Dir(cfg.staticDir))
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 
-	mux.Handle("/static/", http.StripPrefix("/static/", fileServer))
+	// Intialize a new instance of our application struct, containing the
+	//dependencies
+	app := &application{
+		logger: logger,
+	}
 
-	mux.HandleFunc("/", home)
-	mux.HandleFunc("/snippet/view", snippetView)
-	mux.HandleFunc("/snippet/create", snippetCreate)
+	logger.Info("Starting server", slog.String("addr", cfg.addr))
 
-	log.Printf("starting server on %s", cfg.addr)
+	err := http.ListenAndServe(cfg.addr, app.routes())
 
-	err := http.ListenAndServe(cfg.addr, mux)
-	log.Fatal(err)
+	logger.Error(err.Error())
+	os.Exit(1)
 }
