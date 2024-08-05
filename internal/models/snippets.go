@@ -2,9 +2,8 @@ package models
 
 import (
 	"database/sql"
+	"errors"
 	"time"
-
-	"sigs.k8s.io/kustomize/kyaml/errors"
 )
 
 // Define a Snippet type to hold the data for an individual snippet.
@@ -52,11 +51,12 @@ func (m *SnippetModel) Get(id int) (Snippet, error) {
 	// Initialize a pointer to a new zeroed Snippet struct.
 	var s Snippet
 
+	// Use row.Scan() to copy the values from each field in sql.Row to the corresponding field in the Snippet struct.
 	err := row.Scan(&s.ID, &s.Title, &s.Content, &s.Created, &s.Expires)
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return Snippet{}, errors.New("snippet not found")
+			return Snippet{}, ErrNoRecord
 		} else {
 			return Snippet{}, err
 		}
