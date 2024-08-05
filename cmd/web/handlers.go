@@ -3,7 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
-	"html/template"
+	// "html/template"
 	"net/http"
 	"strconv"
 
@@ -18,26 +18,36 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	files := []string{
-		"./ui/html/pages/home.tmpl",
-		"./ui/html/base.tmpl",
-		"./ui/html/partials/nav.tmpl",
-	}
-
-	ts, err := template.ParseFiles(files...)
-
+	snippets, err := app.snippets.Latest()
 	if err != nil {
-		app.logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI())
 		app.serverError(w, r, err)
 		return
 	}
 
-	err = ts.ExecuteTemplate(w, "base", nil)
-
-	if err != nil {
-		app.logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI())
-		app.serverError(w, r, err)
+	for _, snippet := range snippets {
+		fmt.Fprintf(w, "%v\n", snippet)
 	}
+
+	// files := []string{
+	// 	"./ui/html/pages/home.tmpl",
+	// 	"./ui/html/base.tmpl",
+	// 	"./ui/html/partials/nav.tmpl",
+	// }
+
+	// ts, err := template.ParseFiles(files...)
+
+	// if err != nil {
+	// 	app.logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI())
+	// 	app.serverError(w, r, err)
+	// 	return
+	// }
+
+	// err = ts.ExecuteTemplate(w, "base", nil)
+
+	// if err != nil {
+	// 	app.logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI())
+	// 	app.serverError(w, r, err)
+	// }
 
 }
 
@@ -75,8 +85,8 @@ func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 
-	title := "O snail"
-	content := "O snail\nClimb Mount Fuji,\nBut slowly, slowly!\n\n– Kobayashi Issa"
+	title := "snail"
+	content := "snail\nClimb Mount Fuji,\nBut slowly, slowly!\n\n– Kobayashi Issa"
 	expires := 7
 
 	id, err := app.snippets.Insert(title, content, strconv.Itoa(expires))
