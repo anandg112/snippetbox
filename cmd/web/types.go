@@ -1,12 +1,18 @@
 package main
 
-import "log/slog"
+import (
+	"log/slog"
+
+	"snippetbox.anandgautam.io/internal/models"
+)
 
 type config struct {
 	addr      string
 	staticDir string
+	dsn       string
 }
 
 type application struct {
-	logger *slog.Logger
+	logger   *slog.Logger
+	snippets *models.SnippetModel
 }
