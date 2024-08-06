@@ -7,9 +7,8 @@ import (
 )
 
 type config struct {
-	addr      string
-	staticDir string
-	dsn       string
+	addr string
+	dsn  string
 }
 
 type application struct {
