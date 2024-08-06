@@ -4,11 +4,9 @@ import "net/http"
 
 func (app *application) routes() *http.ServeMux {
 
-	var cfg config
-
 	mux := http.NewServeMux()
 
-	fileServer := http.FileServer(http.Dir(cfg.staticDir))
+	fileServer := http.FileServer(http.Dir("./ui/static/"))
 
 	mux.Handle("/static/", http.StripPrefix("/static/", fileServer))
 

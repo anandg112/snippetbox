@@ -16,7 +16,6 @@ func main() {
 	var cfg config
 
 	flag.StringVar(&cfg.addr, "addr", ":4000", "HTTP network address")
-	flag.StringVar(&cfg.staticDir, "static-dir", "./ui/static", "Path to static assets")
 	flag.StringVar(&cfg.dsn, "dsn", "web:123456@/snippetbox?parseTime=true", "MySQL data source name")
 
 	flag.Parse()
