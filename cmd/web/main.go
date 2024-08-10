@@ -22,7 +22,7 @@ func main() {
 
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 
-	// To keep the main() function tiday, put the code for creating a new
+	// To keep the main() function tidy, put the code for creating a new
 	//connection pool into a separate function named openDB(). We pass openDB()
 	//the DSN from the command-line flag, and it returns a sql.DB connection pool.
 
