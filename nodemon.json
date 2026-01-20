@@ -1,0 +1,7 @@
+{
+  "watch": ["./**/*.go"],
+  "ext": "go,mod",
+  "ignore": ["vendor"],
+  "exec": "go run .",
+  "signal": "SIGTERM"
+}
